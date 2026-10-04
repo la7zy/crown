@@ -24,7 +24,7 @@ async function open(file, secret) {
 }
 
 let eps = [];
-try { eps = JSON.parse(fs.readFileSync('episodes.json', 'utf8')).eps; check(Array.isArray(eps) && eps.length > 0, 'episodes.json lists ' + eps.length + ' episodes'); }
+try { eps = JSON.parse(fs.readFileSync('episodes.json', 'utf8')).eps || []; check(eps.length > 0, 'episodes.json lists ' + eps.length + ' episodes'); }
 catch (e) { check(false, 'episodes.json is valid JSON (' + e.message + ')'); }
 
 for (const f of ['index.html', 'ep.html', 'teacher.html', 'teacher.bin', 'sw.js', 'manifest.webmanifest', '.nojekyll']) check(fs.existsSync(f), f + ' is present');
@@ -54,7 +54,7 @@ if (process.env.CROWN_PASSWORD) {
   try {
     const t = await open('teacher.bin', process.env.CROWN_PASSWORD);
     check(true, 'teacher.bin opens with the teacher password');
-    check(t.eps.length === ready.length, 'teacher page lists the same ' + ready.length + ' released episodes');
+    check(t.eps.map((e) => e.n).sort().join() === ready.map((e) => e.n).sort().join(), 'teacher page lists the same ' + ready.length + ' released episodes');
     for (const e of t.eps) {
       try { const p = await open('ep' + e.n + '.bin', e.code); check(Boolean(p.html && p.title), 'episode ' + e.n + ' opens with its code'); }
       catch { check(false, 'episode ' + e.n + ' opens with its code'); }

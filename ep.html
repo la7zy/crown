@@ -97,7 +97,7 @@ function missing(){app.innerHTML=head()+'<h1>Not released yet</h1><p>This episod
 function btn(t){var b=document.createElement('button');b.type='button';b.textContent=t;return b}
 function films(){var red=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,list=[];
 app.querySelectorAll('.film').forEach(function(f){var mk=window.SCN&&window.SCN[f.getAttribute('data-scene')];if(typeof mk!=='function'){f.hidden=true;return}var cv=document.createElement('canvas');cv.width=720;cv.height=900;cv.setAttribute('role','img');cv.setAttribute('aria-label',f.getAttribute('data-label'));var ctl=document.createElement('div');ctl.className='ctl';var pb=btn('Pause'),rb=btn('Replay');ctl.appendChild(pb);ctl.appendChild(rb);f.appendChild(cv);f.appendChild(ctl);
-var sc=mk(cv),o={sc:sc,run:!red,base:red?sc.still:0,vis:false};pb.textContent=o.run?'Pause':'Play';
+var sc;try{sc=mk(cv)}catch(e){console.error(e);f.hidden=true;return}var o={sc:sc,run:!red,base:red?sc.still:0,vis:false};pb.textContent=o.run?'Pause':'Play';
 pb.addEventListener('click',function(){o.run=!o.run;pb.textContent=o.run?'Pause':'Play';if(!o.run)sc.render(o.base)});rb.addEventListener('click',function(){o.base=0;o.run=true;pb.textContent='Pause'});
 if('IntersectionObserver' in window)new IntersectionObserver(function(e){o.vis=e[0].isIntersecting},{threshold:.2}).observe(cv);else o.vis=true;list.push(o);sc.render(o.base)});
 var lt=null,last=0,my=++GEN;function loop(ts){if(my!==GEN)return;if(lt===null)lt=ts;var dt=Math.min(.1,(ts-lt)/1000);lt=ts;list.forEach(function(o){if(o.vis&&o.run)o.base+=dt});if(ts-last>30){last=ts;list.forEach(function(o){if(o.vis&&o.run)o.sc.render(o.base)})}requestAnimationFrame(loop)}
@@ -114,7 +114,7 @@ function show(p){document.title=p.title+' | The Price of a Crown';app.innerHTML=
 function boot(){if(!E){location.replace('index.html');return}
 if(!(window.crypto&&crypto.subtle)){app.innerHTML=head()+'<h1>This page needs a secure connection</h1><p>Open it from the https address your teacher gave you.</p>';return}
 var st=ls('crown.k.'+E),hm=location.hash.match(/c=([^&]+)/),hc=hm&&!ONE?decodeURIComponent(hm[1]):null;
-load().then(function(){if(st)return tryKey(ub64(st)).then(show).catch(function(){return hc?tryCode(hc).then(show):form()});if(hc)return tryCode(hc).then(show);form()}).catch(function(e){if(e&&e.message==='missing')missing();else form(why(e))})}
+load().then(function(){if(st)return Promise.resolve().then(function(){return tryKey(ub64(st))}).then(show).catch(function(){return hc?tryCode(hc).then(show):form()});if(hc)return tryCode(hc).then(show);form()}).catch(function(e){if(e&&e.message==='missing')missing();else form(why(e))})}
 if(ONE){window.__open=function(n){E=n;buf=null;GEN++;home.hidden=true;app.hidden=false;app.innerHTML=head()+'<p>Opening the episode.</p>';window.scrollTo(0,0);boot()};
 app.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href="index.html"]');if(!a)return;e.preventDefault();GEN++;app.innerHTML='';app.hidden=true;document.getElementById('def').hidden=true;home.hidden=false;window.__home();window.scrollTo(0,0)});return}
 boot();

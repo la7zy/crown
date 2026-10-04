@@ -41,7 +41,6 @@ These were patched into the built files on 2026-10-04. The builder that produces
 - `ep.html`: a failed download now says so instead of "That code didn't open this episode".
 - `ep.html`: a missing animation scene no longer stops the vocabulary, quiz and PDF button from working.
 - `teacher.html`: the device stores the derived key instead of the teacher password in plain text, and there is a "Lock the teacher page on this device" button for shared classroom computers.
-- `teacher.html`: `noindex`, so search engines do not list the teacher page.
 - `manifest.webmanifest`: separate `any` and `maskable` icon entries.
 
 ## Limits worth knowing

@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <link rel="icon" href="icon-192.png">
-<meta name="robots" content="noindex">
 <title>Teacher page | The Price of a Crown</title>
 <style>:root{--bg:#e8ecf1;--card:#f4f6f9;--ink:#0f1a28;--mute:#4a5a6e;--line:#c2ccd8;--gold:#8a6414;--good:#1d6b45;--bad:#9c2f2f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#070c14;--card:#0e1622;--ink:#e3e9f0;--mute:#93a3b6;--line:#223044;--gold:#e0b04a;--good:#6fcf9b;--bad:#f08c8c}}
@@ -2395,7 +2394,7 @@ document.getElementById('cp').addEventListener('click',function(){var m=document
 document.getElementById('pick').addEventListener('click',function(ev){var b=ev.target.closest('button');if(b)pick(Number(b.getAttribute('data-i')))});if(d.eps.length)pick(d.eps.length-1)}
 function sub(){if(!norm(pw.value)){err.textContent='Enter the password first.';err.hidden=false;return}go.disabled=true;open(pw.value).then(function(d){pw.value='';render(d)},function(e){go.disabled=false;err.textContent=e&&e.message==='missing'?'The teacher file is missing from the site.':e&&e.name==='OperationError'?'That password didn\u2019t work. Check it and try again.':'The teacher file didn\u2019t download. Check your internet and try again.';err.hidden=false})}
 pw.addEventListener('input',function(){err.hidden=true});go.addEventListener('click',sub);pw.addEventListener('keydown',function(e){if(e.key==='Enter')sub()});
-forget('crown.tp');var sv=ls('crown.tk');if(sv)reopen(sv).then(render).catch(function(){});
+forget('crown.tp');var sv=ls('crown.tk');if(sv)Promise.resolve().then(function(){return reopen(sv)}).then(render).catch(function(e){if(e&&e.name==='OperationError')forget('crown.tk')});
 })();
 </script>
 </body>
