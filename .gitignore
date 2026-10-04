@@ -1,0 +1,5 @@
+# Never publish the teacher sheet, the printable PDFs or the original build
+*.pdf
+*.zip
+private/
+.claude/
