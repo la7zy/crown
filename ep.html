@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070c14">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>The Price of a Crown</title>
+<style>:root{--bg:#e8ecf1;--card:#f4f6f9;--ink:#0f1a28;--mute:#4a5a6e;--line:#c2ccd8;--gold:#8a6414;--good:#1d6b45;--bad:#9c2f2f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#070c14;--card:#0e1622;--ink:#e3e9f0;--mute:#93a3b6;--line:#223044;--gold:#e0b04a;--good:#6fcf9b;--bad:#f08c8c}}
+:root[data-theme="dark"]{--bg:#070c14;--card:#0e1622;--ink:#e3e9f0;--mute:#93a3b6;--line:#223044;--gold:#e0b04a;--good:#6fcf9b;--bad:#f08c8c}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:19px;line-height:1.72}
+main{max-width:600px;margin:0 auto;padding:22px 18px 90px}
+a{color:inherit}
+h1{font-size:30px;line-height:1.18;font-weight:400;margin:0 0 6px}
+h2{font-size:22px;line-height:1.3;font-weight:400;margin:44px 0 12px}
+.series{font-size:15px;color:var(--mute);margin:0 0 18px}
+.series a{text-decoration:none;border-bottom:1px solid var(--line)}
+.sub{font-style:italic;color:var(--mute);margin:0 0 22px}
+.where{font-size:17px;font-style:italic;color:var(--mute);font-weight:400;margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+p{margin:0 0 1em}
+.prev{color:var(--mute);border-left:2px solid var(--gold);padding:2px 0 2px 14px;margin:0 0 8px}
+button{font:inherit;font-size:16px;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 18px;min-height:44px;cursor:pointer}
+button:active{transform:translateY(1px)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.vw{display:inline;font-size:inherit;font-weight:700;border:0;border-bottom:2px dotted var(--gold);border-radius:0;padding:0;min-height:0;line-height:inherit}
+.film{margin:14px 0 22px}
+.film canvas{display:block;width:100%;height:auto;border-radius:10px;background:#02050a}
+.ctl{display:flex;gap:10px;margin-top:10px}
+.gate{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:26px 0}
+.gate p{margin:0 0 12px}
+.gate b{font-weight:700}
+.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.qz{border-top:1px solid var(--line);padding:16px 0}
+.qz p{margin:0 0 10px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.opts button{border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.3}
+.opts button[disabled]{cursor:default;opacity:.55}
+.opts button.right{border-color:var(--good);color:var(--good);opacity:1}
+.opts button.wrong{border-color:var(--bad);color:var(--bad);opacity:1}
+.why{font-size:16px;line-height:1.6;color:var(--mute);margin:10px 0 0}
+.score{font-size:16px;color:var(--mute)}
+ul{padding-left:1.1em;margin:0 0 1em}
+li{margin:0 0 .5em}
+dl{margin:0}
+dt{font-weight:700;margin-top:12px}
+dd{margin:0;color:var(--mute);font-size:17px}
+#def{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:17px;line-height:1.45}
+#def[hidden]{display:none}
+#def b{font-weight:700}
+.err{color:var(--bad);font-size:16px;margin:8px 0 0}
+input[type=text],input[type=password]{font:inherit;width:100%;min-height:48px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.eps{list-style:none;padding:0;margin:0}
+.eps li{margin:0;border-top:1px solid var(--line)}
+.eps a,.eps span.it{display:grid;grid-template-columns:2.2em 1fr auto;gap:8px;align-items:baseline;padding:14px 0;text-decoration:none;min-height:44px}
+.eps .n{color:var(--mute);font-size:16px}
+.eps .st{font-size:14px;color:var(--mute);white-space:nowrap}
+.eps .open .st{color:var(--good)}
+.eps .off{color:var(--mute)}
+.note{font-size:15px;line-height:1.6;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;margin-top:30px}
+.qr{background:#fff;padding:14px;border-radius:12px;max-width:420px;margin:16px 0}
+.qr svg{display:block;width:100%;height:auto}
+.code{font-size:30px;letter-spacing:.04em;margin:6px 0 0}
+</style>
+</head>
+<body>
+<main id="app"><p class="series"><a href="index.html">The Price of a Crown</a></p><p>Opening the episode.</p></main>
+<div id="def" role="status" aria-live="polite" hidden><span id="deft"></span><button type="button" id="defx">Close</button></div>
+<script>
+(function(){
+var qs=new URLSearchParams(location.search),E=(qs.get('e')||'').replace(/[^0-9]/g,'').slice(0,2),app=document.getElementById('app'),IT=150000,buf=null,ONE=!!window.__ONEPAGE__,GEN=0,home=document.getElementById('home');
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function b64(u){var s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)}
+function ub64(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+function norm(c){return String(c||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function head(){return '<p class="series"><a href="index.html">The Price of a Crown</a></p>'}
+function load(){if(!buf&&window.__BIN__&&window.__BIN__[E])buf=ub64(window.__BIN__[E]);return buf?Promise.resolve(buf):fetch('ep'+E+'.bin').then(function(r){if(!r.ok)throw new Error('missing');return r.arrayBuffer()}).then(function(a){buf=new Uint8Array(a);return buf})}
+function derive(code,salt){return crypto.subtle.importKey('raw',new TextEncoder().encode(norm(code)),'PBKDF2',false,['deriveBits']).then(function(km){return crypto.subtle.deriveBits({name:'PBKDF2',salt:salt,iterations:IT,hash:'SHA-256'},km,256)}).then(function(b){return new Uint8Array(b)})}
+function decrypt(key,u){return crypto.subtle.importKey('raw',key,'AES-GCM',false,['decrypt']).then(function(k){return crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(16,28)},k,u.slice(28))}).then(function(p){return JSON.parse(new TextDecoder().decode(p))})}
+function tryKey(key){return load().then(function(u){return decrypt(key,u)})}
+function tryCode(code){return load().then(function(u){return derive(code,u.slice(0,16)).then(function(key){return decrypt(key,u).then(function(p){ls('crown.k.'+E,b64(key));return p})})})}
+function form(msg){(window.__EPS__?Promise.resolve(window.__EPS__):fetch('episodes.json').then(function(r){return r.json()})).catch(function(){return{eps:[]}}).then(function(d){var ep=(d.eps||[]).filter(function(x){return x.n===E})[0]||{t:'Episode '+E};
+app.innerHTML=head()+'<h1>'+esc(ep.t)+'</h1><p class="sub"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" style="vertical-align:-2px;margin-right:6px"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>Episode '+Number(E)+'. This episode is locked.</p><p>Scan the code on the classroom screen, or type today\u2019s code here.</p><label for="code">Today\u2019s code</label><input id="code" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="word-1234"><p class="err" id="err" hidden></p><div class="row"><button type="button" class="primary" id="go">Open episode</button>'+(window.__DEMO_CODE__&&window.__DEMO_CODE__[E]?'<button type="button" id="demo">Preview only: open as if scanned</button>':'')+'</div>';
+var dm=document.getElementById('demo');if(dm)dm.addEventListener('click',function(){dm.disabled=true;tryCode(window.__DEMO_CODE__[E]).then(show)});
+var inp=document.getElementById('code'),err=document.getElementById('err'),go=document.getElementById('go');if(msg){err.textContent=msg;err.hidden=false}
+inp.addEventListener('input',function(){err.hidden=true});
+function sub(){if(!norm(inp.value)){err.textContent='Enter the code first.';err.hidden=false;return}go.disabled=true;go.textContent='Opening';tryCode(inp.value).then(show).catch(function(){go.disabled=false;go.textContent='Open episode';err.textContent='That code didn\u2019t open this episode. Check it and try again.';err.hidden=false})}
+go.addEventListener('click',sub);inp.addEventListener('keydown',function(e){if(e.key==='Enter')sub()})})}
+function missing(){app.innerHTML=head()+'<h1>Not released yet</h1><p>This episode hasn\u2019t been released. Go back to the <a href="index.html">list of episodes</a>.</p>'}
+function btn(t){var b=document.createElement('button');b.type='button';b.textContent=t;return b}
+function films(){var red=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,list=[];
+app.querySelectorAll('.film').forEach(function(f){var cv=document.createElement('canvas');cv.width=720;cv.height=900;cv.setAttribute('role','img');cv.setAttribute('aria-label',f.getAttribute('data-label'));var ctl=document.createElement('div');ctl.className='ctl';var pb=btn('Pause'),rb=btn('Replay');ctl.appendChild(pb);ctl.appendChild(rb);f.appendChild(cv);f.appendChild(ctl);
+var sc=window.SCN[f.getAttribute('data-scene')](cv),o={sc:sc,run:!red,base:red?sc.still:0,vis:false};pb.textContent=o.run?'Pause':'Play';
+pb.addEventListener('click',function(){o.run=!o.run;pb.textContent=o.run?'Pause':'Play';if(!o.run)sc.render(o.base)});rb.addEventListener('click',function(){o.base=0;o.run=true;pb.textContent='Pause'});
+if('IntersectionObserver' in window)new IntersectionObserver(function(e){o.vis=e[0].isIntersecting},{threshold:.2}).observe(cv);else o.vis=true;list.push(o);sc.render(o.base)});
+var lt=null,last=0,my=++GEN;function loop(ts){if(my!==GEN)return;if(lt===null)lt=ts;var dt=Math.min(.1,(ts-lt)/1000);lt=ts;list.forEach(function(o){if(o.vis&&o.run)o.base+=dt});if(ts-last>30){last=ts;list.forEach(function(o){if(o.vis&&o.run)o.sc.render(o.base)})}requestAnimationFrame(loop)}
+if(list.length)requestAnimationFrame(loop)}
+function vocab(p){var d=document.getElementById('def'),dt=document.getElementById('deft');document.getElementById('defx').addEventListener('click',function(){d.hidden=true});
+app.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.vw');if(!b)return;var w=b.getAttribute('data-w');dt.innerHTML='<b>'+esc(w)+'</b>: '+esc(p.vocab[w]||'');d.hidden=false})}
+function gate(){var gt=app.querySelector('.gate'),af=app.querySelector('.after');if(!gt||!af)return;function open(){af.hidden=false;gt.querySelector('button').hidden=true}if(ls('crown.g.'+E)==='1')open();gt.querySelector('button').addEventListener('click',function(){ls('crown.g.'+E,'1');open()})}
+function quiz(p){var box=document.getElementById('quiz');if(!box)return;var O=['Proven record','Reported, not proven','False rumour','Opinion'],done=0,ok=0,sc=document.createElement('p');sc.className='score';
+p.quiz.forEach(function(q){var d=document.createElement('div');d.className='qz';var s=document.createElement('p');s.textContent=q.s;d.appendChild(s);var os=document.createElement('div');os.className='opts';var why=document.createElement('p');why.className='why';why.hidden=true;
+O.forEach(function(lab,i){var b=btn(lab);b.addEventListener('click',function(){Array.prototype.forEach.call(os.children,function(x,j){x.disabled=true;if(j===q.a)x.className='right'});if(i!==q.a)b.className='wrong';else ok++;done++;why.textContent=(i===q.a?'Yes. ':'Not quite. ')+q.w;why.hidden=false;sc.textContent='You have '+ok+' right out of '+done+' so far. There are '+p.quiz.length+' in all.'});os.appendChild(b)});
+d.appendChild(os);d.appendChild(why);box.appendChild(d)});sc.textContent='Choose one answer for each line.';box.appendChild(sc)}
+function pdf(p){var b=document.getElementById('pdf');if(!b)return;if(!p.pdf){b.hidden=true;return}b.addEventListener('click',function(){var u=ub64(p.pdf),bl=new Blob([u],{type:'application/pdf'}),url=URL.createObjectURL(bl),a=document.createElement('a');a.href=url;a.download=p.pdfName;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(url);a.remove()},2000)})}
+function show(p){document.title=p.title+' | The Price of a Crown';app.innerHTML=head()+p.html;try{(new Function(p.code))()}catch(e){console.error(e)}films();vocab(p);gate();quiz(p);pdf(p);if(!ONE&&location.hash)history.replaceState(null,'',location.pathname+location.search);window.scrollTo(0,0)}
+function boot(){if(!E){location.replace('index.html');return}
+if(!(window.crypto&&crypto.subtle)){app.innerHTML=head()+'<h1>This page needs a secure connection</h1><p>Open it from the https address your teacher gave you.</p>';return}
+var st=ls('crown.k.'+E),hm=location.hash.match(/c=([^&]+)/),hc=hm&&!ONE?decodeURIComponent(hm[1]):null;
+load().then(function(){if(st)return tryKey(ub64(st)).then(show).catch(function(){return hc?tryCode(hc).then(show):form()});if(hc)return tryCode(hc).then(show);form()}).catch(function(e){if(e&&e.message==='missing')missing();else form(hc?'That code didn\u2019t open this episode. Check it and try again.':null)})}
+if(ONE){window.__open=function(n){E=n;buf=null;GEN++;home.hidden=true;app.hidden=false;app.innerHTML=head()+'<p>Opening the episode.</p>';window.scrollTo(0,0);boot()};
+app.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href="index.html"]');if(!a)return;e.preventDefault();GEN++;app.innerHTML='';app.hidden=true;document.getElementById('def').hidden=true;home.hidden=false;window.__home();window.scrollTo(0,0)});return}
+boot();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070c14">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>The Price of a Crown</title>
+<style>:root{--bg:#e8ecf1;--card:#f4f6f9;--ink:#0f1a28;--mute:#4a5a6e;--line:#c2ccd8;--gold:#8a6414;--good:#1d6b45;--bad:#9c2f2f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#070c14;--card:#0e1622;--ink:#e3e9f0;--mute:#93a3b6;--line:#223044;--gold:#e0b04a;--good:#6fcf9b;--bad:#f08c8c}}
+:root[data-theme="dark"]{--bg:#070c14;--card:#0e1622;--ink:#e3e9f0;--mute:#93a3b6;--line:#223044;--gold:#e0b04a;--good:#6fcf9b;--bad:#f08c8c}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:19px;line-height:1.72}
+main{max-width:600px;margin:0 auto;padding:22px 18px 90px}
+a{color:inherit}
+h1{font-size:30px;line-height:1.18;font-weight:400;margin:0 0 6px}
+h2{font-size:22px;line-height:1.3;font-weight:400;margin:44px 0 12px}
+.series{font-size:15px;color:var(--mute);margin:0 0 18px}
+.series a{text-decoration:none;border-bottom:1px solid var(--line)}
+.sub{font-style:italic;color:var(--mute);margin:0 0 22px}
+.where{font-size:17px;font-style:italic;color:var(--mute);font-weight:400;margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+p{margin:0 0 1em}
+.prev{color:var(--mute);border-left:2px solid var(--gold);padding:2px 0 2px 14px;margin:0 0 8px}
+button{font:inherit;font-size:16px;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 18px;min-height:44px;cursor:pointer}
+button:active{transform:translateY(1px)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.vw{display:inline;font-size:inherit;font-weight:700;border:0;border-bottom:2px dotted var(--gold);border-radius:0;padding:0;min-height:0;line-height:inherit}
+.film{margin:14px 0 22px}
+.film canvas{display:block;width:100%;height:auto;border-radius:10px;background:#02050a}
+.ctl{display:flex;gap:10px;margin-top:10px}
+.gate{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:26px 0}
+.gate p{margin:0 0 12px}
+.gate b{font-weight:700}
+.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.qz{border-top:1px solid var(--line);padding:16px 0}
+.qz p{margin:0 0 10px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.opts button{border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.3}
+.opts button[disabled]{cursor:default;opacity:.55}
+.opts button.right{border-color:var(--good);color:var(--good);opacity:1}
+.opts button.wrong{border-color:var(--bad);color:var(--bad);opacity:1}
+.why{font-size:16px;line-height:1.6;color:var(--mute);margin:10px 0 0}
+.score{font-size:16px;color:var(--mute)}
+ul{padding-left:1.1em;margin:0 0 1em}
+li{margin:0 0 .5em}
+dl{margin:0}
+dt{font-weight:700;margin-top:12px}
+dd{margin:0;color:var(--mute);font-size:17px}
+#def{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:17px;line-height:1.45}
+#def[hidden]{display:none}
+#def b{font-weight:700}
+.err{color:var(--bad);font-size:16px;margin:8px 0 0}
+input[type=text],input[type=password]{font:inherit;width:100%;min-height:48px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.eps{list-style:none;padding:0;margin:0}
+.eps li{margin:0;border-top:1px solid var(--line)}
+.eps a,.eps span.it{display:grid;grid-template-columns:2.2em 1fr auto;gap:8px;align-items:baseline;padding:14px 0;text-decoration:none;min-height:44px}
+.eps .n{color:var(--mute);font-size:16px}
+.eps .st{font-size:14px;color:var(--mute);white-space:nowrap}
+.eps .open .st{color:var(--good)}
+.eps .off{color:var(--mute)}
+.note{font-size:15px;line-height:1.6;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;margin-top:30px}
+.qr{background:#fff;padding:14px;border-radius:12px;max-width:420px;margin:16px 0}
+.qr svg{display:block;width:100%;height:auto}
+.code{font-size:30px;letter-spacing:.04em;margin:6px 0 0}
+
+.hero{position:relative;margin:-22px -18px 0;background:#02050a;overflow:hidden}
+.hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(to bottom,rgba(7,12,20,0),var(--bg))}
+.hx{position:relative;z-index:1;margin-top:-92px;padding:0 18px 4px}
+.hx h1{font-size:38px;line-height:1.08;margin:0 0 8px}
+.hx .sub{margin:0 0 10px}
+.meta{font-size:15px;color:var(--mute);margin:0 0 14px}
+.cta{display:inline-flex;align-items:center;min-height:46px;padding:8px 22px;border-radius:999px;background:var(--gold);color:#0b0f17;text-decoration:none;font-size:17px}
+.part{font-size:15px;color:var(--mute);font-weight:400;margin:34px 0 4px}
+.list{list-style:none;padding:0;margin:0}
+.list li{margin:0;border-top:1px solid var(--line)}
+.ep{display:grid;grid-template-columns:128px 1fr;gap:14px;align-items:center;padding:14px 0;text-decoration:none;color:inherit}
+.th{position:relative;display:block;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#0b1320}
+.im{position:absolute;inset:0;background-size:cover;background-position:center}
+.locked .im{filter:blur(5px) brightness(.5);transform:scale(1.12)}
+.ph{display:flex;align-items:flex-end;justify-content:flex-start;padding:0 0 1px 9px;background:linear-gradient(135deg,#101b2c,#070c14);font-style:italic;font-size:30px;line-height:1.1;color:rgba(224,176,74,.45)}
+.cta[hidden]{display:none}
+.lk{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#f1e9d2}
+.lk span{display:flex;width:38px;height:38px;border-radius:50%;background:rgba(3,6,12,.62);align-items:center;justify-content:center}
+.open .lk{align-items:flex-end;justify-content:flex-end;padding:6px}
+.open .lk span{width:26px;height:26px;background:var(--gold);color:#0b0f17}
+.tx{display:block;min-width:0}
+.tx .n{display:block;font-size:14px;color:var(--mute);line-height:1.3}
+.tx .t{display:block;font-size:18px;line-height:1.28;margin:2px 0 4px}
+.tx .d{display:block;font-size:15px;line-height:1.42;color:var(--mute)}
+.tx .st{display:block;font-size:14px;line-height:1.3;margin-top:6px;color:var(--mute)}
+.open .st{color:var(--good)}
+.off .t{color:var(--mute)}
+</style>
+</head>
+<body>
+<main id="home">
+<header class="hero"><img id="heroimg" alt="" width="720" height="480"></header>
+<div class="hx"><h1>The Price of a Crown</h1><p class="sub">Five queens, one princess, and what the crown cost the people near it.</p><p class="meta" id="meta">Fifteen episodes. Your teacher opens one on each reading day.</p><a class="cta" id="cta" hidden></a></div>
+<div id="parts"></div>
+<p class="note">To keep this on your phone, open your browser menu and choose “Add to Home Screen”. Episodes you have opened will work without internet.</p>
+<p class="note" id="tlink"><a href="teacher.html">Teacher page</a></p>
+</main>
+
+<script>
+(function(){
+var IMG=window.__IMG__||{},PARTS=['Part one: the queens','Part two: Diana','Part three: the ending'],data=null;
+var LOCK='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>',OPEN='<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function ls(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function img(k){return IMG[k]||(k==='hero'?'hero.jpg':'thumb'+k+'.jpg')}
+document.getElementById('heroimg').src=img('hero');
+function draw(){var h='',last=null,d=data;PARTS.forEach(function(pt,pi){h+='<h2 class="part">'+pt+'</h2><ul class="list">';d.eps.filter(function(e){return e.p===pi}).forEach(function(e){var open=!!ls('crown.k.'+e.n);if(open)last=e;
+var th=e.ready?'<span class="th"><span class="im" style="background-image:url('+img(e.n)+')"></span><span class="lk"><span>'+(open?OPEN:LOCK)+'</span></span></span>':'<span class="th ph">'+Number(e.n)+'<span class="lk"><span>'+LOCK+'</span></span></span>';
+var tx='<span class="tx"><span class="n">Episode '+Number(e.n)+'</span><span class="t">'+esc(e.t)+'</span><span class="d">'+esc(e.d)+'</span><span class="st">'+(e.ready?(open?'Open on this phone':'Locked'):'Coming soon')+'</span></span>';
+h+='<li>'+(e.ready?'<a class="ep '+(open?'open':'locked')+'" data-n="'+e.n+'" href="ep.html?e='+e.n+'">'+th+tx+'</a>':'<span class="ep off">'+th+tx+'</span>')+'</li>'});h+='</ul>'});
+document.getElementById('parts').innerHTML=h;var c=document.getElementById('cta');if(last){c.hidden=false;c.textContent='Continue with episode '+Number(last.n);c.setAttribute('href','ep.html?e='+last.n);c.setAttribute('data-n',last.n)}else c.hidden=true}
+(window.__EPS__?Promise.resolve(window.__EPS__):fetch('episodes.json').then(function(r){return r.json()})).then(function(d){data=d;draw()}).catch(function(){document.getElementById('parts').innerHTML='<p>The list of episodes didn’t load. Check your connection and reload.</p>'});
+window.__home=function(){if(data)draw()};
+if(window.__ONEPAGE__){document.getElementById('tlink').hidden=true;document.getElementById('home').addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[data-n]');if(a){e.preventDefault();window.__open(a.getAttribute('data-n'))}})}
+else if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+
+</body>
+</html>
