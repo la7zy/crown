@@ -1,0 +1,151 @@
+/* Prototype: the activities after the story. Tiles on top, one activity open below. */
+.afterword { container: activities / inline-size; }
+.after-head { margin-bottom: 22px; }
+.eyebrow { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin: 0 0 8px; }
+.afterword .after-title { font-weight: 400; font-size: clamp(30px, 7vw, 42px); line-height: 1.1; margin: 0 0 8px; text-wrap: balance; }
+.after-lead, .panel-lead { color: var(--mute); margin: 0 0 16px; font-size: 17px; }
+
+/* ---------- tiles ---------- */
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 26px; }
+.tile {
+  display: grid; grid-template-columns: 1fr; justify-items: start; row-gap: 6px; align-content: start;
+  text-align: left; border-radius: 14px; padding: 14px; min-height: 76px;
+  background: var(--card); border: 1px solid var(--line); color: var(--ink);
+}
+.tile:hover { border-color: rgb(224 176 74 / 0.6); }
+.tile.is-on { border-color: var(--gold); background: #131d2c; box-shadow: 0 0 0 1px var(--gold) inset, 0 12px 30px rgb(0 0 0 / 0.35); }
+.tile-icon { display: inline-flex; width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center; background: rgb(224 176 74 / 0.12); color: var(--gold); }
+.tile-name { font-size: 17px; line-height: 1.25; }
+.tile-note { font-size: 13px; line-height: 1.3; color: var(--mute); }
+/* the crown is the main activity: it gets the full row and a bigger badge */
+.tile-crown { grid-column: 1 / -1; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 14px; row-gap: 2px; align-items: center; align-content: center; min-height: 92px; padding: 18px; background: linear-gradient(135deg, #1b2434, #101826); }
+.tile-crown .tile-icon { grid-row: 1 / 3; width: 52px; height: 52px; background: var(--gold); color: #0b0f17; }
+.tile-crown .tile-name { font-size: 22px; }
+
+.panel[hidden] { display: none; }
+.panel { scroll-margin-top: 16px; }
+
+/* ---------- question cards (crown quiz and rumour sorter) ---------- */
+.q-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+.q-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.q-count { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); margin: 0; line-height: 1.3; }
+.crown-wrap { width: 96px; flex: none; }
+.crown-art { display: block; width: 100%; height: auto; filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5)); }
+.jewel { fill: #1b1408; stroke: #6e5210; stroke-width: 2; transform-box: fill-box; transform-origin: center; }
+.jewel.on { stroke: #fff3c4; }
+.jewel.fresh { animation: jewel-pop 520ms var(--ease) both; }
+@keyframes jewel-pop { 0% { transform: scale(0); } 65% { transform: scale(1.5); } 100% { transform: scale(1); } }
+
+.q-still { display: block; width: 100%; height: auto; border-radius: 10px; margin-bottom: 14px; background: #02050a; }
+.q-text { font-size: 20px; line-height: 1.4; margin: 0 0 14px; text-wrap: pretty; }
+.q-text.is-quote { font-size: 21px; padding-left: 14px; border-left: 2px solid var(--gold); }
+.q-options { display: grid; gap: 8px; }
+.q-options.is-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.q-option { text-align: left; border-radius: 12px; padding: 12px 14px; font-size: 17px; line-height: 1.35; min-height: 52px; background: rgb(255 255 255 / 0.03); }
+.q-options.is-grid .q-option { text-align: center; font-size: 15px; padding: 10px 8px; }
+.q-option:hover:not([disabled]) { border-color: var(--gold); }
+.q-option[disabled] { cursor: default; opacity: 0.5; }
+/* right and wrong are marked with a sign as well as a colour */
+.q-option.right::after { content: " \2713"; }
+.q-option.wrong::after { content: " \2715"; }
+.q-option.right { opacity: 1; border-color: var(--good); color: var(--good); background: rgb(111 207 155 / 0.08); }
+.q-option.wrong { opacity: 1; border-color: var(--bad); color: var(--bad); background: rgb(240 140 140 / 0.08); }
+.q-feedback { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.q-feedback[hidden] { display: none; }
+.q-why { font-size: 17px; line-height: 1.55; color: #cfd8e3; margin: 0 0 14px; }
+.q-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+
+.q-intro, .q-result { text-align: center; padding: 26px 20px; }
+.q-intro .crown-wrap, .q-result .crown-wrap { width: min(220px, 62%); margin: 0 auto 14px; }
+.q-title { font-weight: 400; font-size: 26px; line-height: 1.2; margin: 0 0 8px; }
+.q-score { font-size: 19px; color: var(--gold); margin: 0 0 6px; }
+.q-lead { color: var(--mute); font-size: 17px; margin: 0 auto 18px; max-width: 30em; }
+.q-missed { margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.q-missed .q-count { flex-basis: 100%; }
+.q-chip { font-size: 14px; padding: 6px 14px; min-height: 40px; }
+
+/* ---------- words: cards that turn over ---------- */
+.word-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.word-card { display: block; padding: 0; border: 0; border-radius: 14px; background: transparent; }
+.word-inner { display: grid; min-height: 104px; height: 100%; }
+/* both faces share one grid cell, so the card is as tall as the longer one */
+.word-front, .word-back {
+  grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line);
+  transition: opacity 260ms ease, transform 320ms var(--ease);
+}
+.word-front { background: var(--card); font-size: 20px; font-weight: 700; }
+.word-back { background: #18233a; border-color: var(--gold); font-size: 15px; line-height: 1.35; color: #dfe6ee; opacity: 0; transform: scale(0.94); }
+.word-card.is-flipped .word-front { opacity: 0; transform: scale(0.94); }
+.word-card.is-flipped .word-back { opacity: 1; transform: none; }
+
+/* ---------- why it matters ---------- */
+.why-list { list-style: none; counter-reset: why; padding: 0; margin: 0; display: grid; gap: 10px; }
+.why-item { counter-increment: why; position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 14px 58px; margin: 0; }
+.why-item::before { content: counter(why); position: absolute; left: 16px; top: 12px; font-size: 26px; line-height: 1; color: var(--gold); font-style: italic; }
+.why-title { font-size: 18px; line-height: 1.3; font-weight: 700; margin: 0 0 4px; }
+.why-text { font-size: 16px; line-height: 1.5; color: var(--mute); margin: 0; }
+
+/* ---------- fun facts: a row to swipe through ---------- */
+.fact-row { display: grid; grid-auto-flow: column; grid-auto-columns: 82%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; margin: 0 calc(var(--gutter) * -1); padding-left: var(--gutter); padding-right: var(--gutter); scrollbar-width: none; }
+.fact-row::-webkit-scrollbar { display: none; }
+.fact-card { scroll-snap-align: center; background: linear-gradient(160deg, #162033, #0e1622); border: 1px solid var(--line); border-radius: 16px; padding: 18px; min-height: 190px; display: flex; flex-direction: column; }
+.fact-num { font-size: 40px; line-height: 1; color: var(--gold); font-style: italic; margin: 0 0 auto; }
+.fact-text { font-size: 18px; line-height: 1.45; margin: 16px 0 0; }
+
+/* ---------- tablets and wider ---------- */
+@container activities (min-width: 560px) {
+  .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .q-card { padding: 24px; }
+  .q-text { font-size: 22px; }
+  .word-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .fact-row { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-columns: auto; overflow: visible; margin: 0; padding: 0; }
+  .why-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jewel.fresh { animation: none; }
+  .word-front, .word-back { transition: none; }
+}
+
+/* ---------- put the scenes in order ---------- */
+.order-lead { color: var(--mute); font-size: 17px; line-height: 1.5; margin: 0 0 14px; }
+.order-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+.order-item { position: relative; display: block; padding: 0; overflow: hidden; text-align: left; border-radius: 12px; background: #0a111c; }
+.order-item:hover:not([disabled]) { border-color: rgb(224 176 74 / 0.6); }
+.order-item[disabled] { cursor: default; }
+.order-pic { display: block; width: 100%; height: auto; transition: opacity var(--quick) ease; }
+.order-label { display: block; padding: 8px 10px 10px; font-size: 15px; line-height: 1.3; }
+.order-fix { display: block; padding: 0 10px 10px; font-size: 13px; line-height: 1.3; color: var(--bad); }
+.order-fix:empty { display: none; }
+.order-badge {
+  position: absolute; top: 8px; left: 8px; width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gold); color: #0b0f17; font-size: 19px; font-weight: 700; line-height: 1;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.6); transform: scale(0); transition: transform 240ms var(--ease);
+}
+.order-item.is-picked { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+.order-item.is-picked .order-badge { transform: scale(1); }
+.order-item.is-picked .order-pic { opacity: 0.6; }
+.order-item.right { border-color: var(--good); box-shadow: 0 0 0 1px var(--good) inset; }
+.order-item.right .order-badge { background: var(--good); }
+.order-item.wrong { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad) inset; }
+.order-item.wrong .order-badge { background: var(--bad); }
+.order-result { border-top: 1px solid var(--line); padding-top: 16px; margin-bottom: 16px; }
+.order-result[hidden] { display: none; }
+.order-result .q-title, .order-result .q-score { text-align: left; }
+.order-list { margin: 8px 0 0; padding-left: 1.4em; }
+.order-list li { margin: 0; color: var(--gold); }
+.order-link { display: block; width: 100%; border: 0; border-radius: 6px; padding: 6px 4px; min-height: 40px; text-align: left; font-size: 16px; line-height: 1.35; color: var(--ink); text-decoration: underline; text-decoration-color: rgb(224 176 74 / 0.6); text-underline-offset: 3px; }
+
+/* in a narrow column, a last tile left alone in its row takes the whole row */
+@container activities (max-width: 559.98px) {
+  .tile.is-wide { grid-column: 1 / -1; }
+}
+@container activities (min-width: 560px) {
+  .tiles { grid-template-columns: repeat(auto-fit, minmax(124px, 1fr)); }
+  .order-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .order-badge, .order-pic { transition: none; }
+}

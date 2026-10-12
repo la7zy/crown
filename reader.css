@@ -1,0 +1,75 @@
+/* What the live site adds to the reader: the screen shown while an episode is locked,
+   and the PDF offer after the activities. Colours and type come from immersive.css. */
+
+/* ---------- before the episode is open ---------- */
+body.locked #stage, body.locked #ctl { display: none; }
+body.locked main { max-width: 560px; min-height: 0; margin: 0 auto; padding: 0 var(--gutter); background: none; }
+
+.lock {
+  min-height: 100svh; display: flex; flex-direction: column;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(26px + env(safe-area-inset-bottom, 0px));
+}
+.lock .top { font-size: var(--text-small); color: var(--mute); }
+
+/* the episode's picture, out of focus, behind everything; darker towards the card */
+.lock-art { position: fixed; inset: 0; z-index: -1; background: var(--stage) center / cover no-repeat; filter: blur(26px) brightness(0.5) saturate(1.15); transform: scale(1.25); }
+.lock::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, rgb(2 5 10 / 0.15), rgb(2 5 10 / 0.82) 72%); }
+
+.lock-card {
+  margin-top: auto; padding: 20px 20px 22px;
+  border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 4px 4px 16px 16px;
+  background: rgb(10 16 26 / 0.88); box-shadow: 0 24px 70px rgb(0 0 0 / 0.55);
+  animation: lock-in 700ms var(--ease) both;
+}
+@keyframes lock-in { from { opacity: 0; transform: translateY(18px); } }
+
+.lock-thumb { position: relative; margin: 0 0 18px; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 9; background: var(--card); }
+.lock-thumb[hidden] { display: none; }
+.lock-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) brightness(0.78); }
+.lock-badge {
+  position: absolute; right: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 11px; border-radius: 999px; background: rgb(2 5 10 / 0.8); color: var(--gold);
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1;
+}
+
+.lock-eyebrow { margin: 0 0 8px; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+.lock h1 { margin: 0 0 10px; font-weight: 400; font-size: clamp(30px, 8.4vw, 40px); line-height: 1.08; text-wrap: balance; }
+.lock-about { margin: 0 0 20px; font-style: italic; color: #d5dde7; }
+.lock-card > .onward-go { margin: 0; }
+
+.lock-form { border-top: 1px solid var(--line); padding-top: 18px; }
+.lock label { display: block; margin: 0 0 8px; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mute); }
+.lock-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.lock input {
+  flex: 1 1 11em; min-width: 0; min-height: 50px; padding: 8px 16px;
+  font: inherit; font-size: 20px; letter-spacing: 0.04em; color: var(--ink);
+  background: rgb(2 5 10 / 0.6); border: 1px solid rgb(255 255 255 / 0.26); border-radius: 12px;
+  transition: border-color var(--quick) ease;
+}
+.lock input::placeholder { color: rgb(163 177 194 / 0.5); }
+.lock input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-color: var(--gold); }
+.lock input[aria-invalid="true"] { border-color: var(--bad); }
+.lock-go { flex: 1 1 auto; min-height: 50px; padding: 10px 22px; border: 0; background: var(--gold); color: #1a1408; font-weight: 600; }
+.lock-go:hover { background: #f0c868; }
+.lock-go[disabled] { opacity: 0.6; cursor: default; }
+.lock-err { margin: 12px 0 0; font-size: 16px; line-height: 1.45; color: var(--bad); }
+.lock-err[hidden] { display: none; }
+.lock-hint { margin: 14px 0 0; font-size: var(--text-small); line-height: 1.5; color: var(--mute); }
+
+@media (min-width: 600px) {
+  .lock-card { margin: auto 0; padding: 26px 28px 28px; }
+}
+
+/* ---------- after the activities: the story on paper ---------- */
+.keep {
+  max-width: var(--measure); margin: 44px auto 0; padding: 16px 20px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px;
+  border: 1px dashed rgb(255 255 255 / 0.24); border-radius: 14px;
+}
+.keep p { margin: 0; font-size: var(--text-small); color: var(--mute); }
+.keep button:hover { border-color: var(--gold); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lock-card { animation: none; }
+  .lock input { transition: none; }
+}

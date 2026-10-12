@@ -1,0 +1,239 @@
+/* The reader: animated scenes play behind the story. Phone first. */
+:root {
+  --stage: #02050a;
+  --bg: #070c14;
+  --card: #0e1622;
+  --ink: #edf1f6;
+  --mute: #a3b1c2;
+  --line: #223044;
+  --gold: #e0b04a;
+  --good: #6fcf9b;
+  --bad: #f08c8c;
+
+  /* the dark veil that travels with the text */
+  --veil: 4 8 14;
+  --veil-strength: 0.7;
+  --veil-feather: 130px;
+
+  --measure: 600px;
+  --gutter: 20px;
+  --slate: 46svh;        /* open space before a part, where the scene shows clearly */
+  --slate-quiet: 30svh;  /* the same, for parts with no scene yet */
+  --part-gap: 11svh;
+  --thread: rgb(224 176 74 / 0.42);   /* the line that joins the parts */
+
+  --font: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --text: 19px;
+  --text-small: 15px;
+  --fade: 900ms;
+  --quick: 240ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: inherit; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; background: var(--stage); }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--stage);
+  font-family: var(--font);
+  font-size: var(--text);
+  line-height: 1.72;
+}
+a { color: inherit; }
+p { margin: 0 0 1.05em; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- the stage: everything that plays behind the text ---------- */
+#stage { position: fixed; inset: 0; z-index: 0; background: var(--stage); overflow: hidden; }
+#stage canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity var(--fade) ease;
+}
+#stage canvas.on { opacity: 1; }
+#stage #fill { filter: blur(42px) brightness(0.4) saturate(1.1); transform: scale(1.3); }
+
+/* Wide screens: show the whole scene in the middle, a soft blur of it at the sides. */
+@media (min-aspect-ratio: 4/5) {
+  #stage #fill { opacity: 1; }
+  #stage .scene {
+    object-fit: contain;
+    -webkit-mask-image: linear-gradient(to right, transparent calc(50% - 40vh), #000 calc(50% - 40vh + 56px), #000 calc(50% + 40vh - 56px), transparent calc(50% + 40vh));
+    mask-image: linear-gradient(to right, transparent calc(50% - 40vh), #000 calc(50% - 40vh + 56px), #000 calc(50% + 40vh - 56px), transparent calc(50% + 40vh));
+  }
+}
+/* Tall phones, while watching: fit the whole scene instead of cropping its sides. */
+@media (max-aspect-ratio: 4/5) {
+  body.watching #stage #fill { opacity: 1; }
+  body.watching #stage .scene {
+    object-fit: contain;
+    -webkit-mask-image: linear-gradient(to bottom, transparent calc(50% - 62.5vw), #000 calc(50% - 62.5vw + 40px), #000 calc(50% + 62.5vw - 40px), transparent calc(50% + 62.5vw));
+    mask-image: linear-gradient(to bottom, transparent calc(50% - 62.5vw), #000 calc(50% - 62.5vw + 40px), #000 calc(50% + 62.5vw - 40px), transparent calc(50% + 62.5vw));
+  }
+}
+
+/* ---------- the story column ---------- */
+main {
+  position: relative; z-index: 1;
+  max-width: calc(var(--measure) + var(--gutter) * 2);
+  margin: 0 auto; padding: 0 var(--gutter);
+  transition: opacity 420ms var(--ease), visibility 0s;
+}
+html.watching { overflow: hidden; }
+body.watching main, body.watching #def { opacity: 0; visibility: hidden; transition: opacity 420ms var(--ease), visibility 0s linear 420ms; }
+
+/* A full-width dark veil behind a block of text. It fades in above the first line
+   and out below the last, so the scene is bright wherever there is nothing to read. */
+.veil { position: relative; isolation: isolate; }
+.veil::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  top: calc(var(--veil-feather) * -1); bottom: calc(var(--veil-feather) * -1);
+  left: 50%; width: 100vw; transform: translateX(-50%);
+  background: linear-gradient(to bottom,
+    rgb(var(--veil) / 0),
+    rgb(var(--veil) / var(--veil-strength)) var(--veil-feather),
+    rgb(var(--veil) / var(--veil-strength)) calc(100% - var(--veil-feather)),
+    rgb(var(--veil) / 0));
+}
+.veil p, .veil li { text-shadow: 0 1px 3px rgb(0 0 0 / 0.75); }
+
+/* ---------- opening screen ---------- */
+.intro { min-height: 100svh; display: flex; flex-direction: column; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 9svh; }
+.intro .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 12px; font-size: var(--text-small); color: var(--mute); }
+.episodes { display: flex; align-items: center; gap: 6px; }
+.episodes a, .episodes span { display: inline-block; text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.22); line-height: 1.2; background: rgb(7 12 20 / 0.5); white-space: nowrap; }
+.episodes .is-on { border-color: var(--gold); color: var(--gold); }
+.episodes .hop { position: relative; padding: 6px 11px; font-size: 18px; line-height: 1; }
+.episodes .hop::after { content: ""; position: absolute; inset: -7px -3px; }   /* a taller, wider place to tap */
+.episodes .hop.is-off { opacity: 0.32; }
+.episodes a:hover { border-color: var(--gold); color: var(--ink); }
+.episodes a:focus-visible, .onward a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.proto { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px dashed rgb(255 255 255 / 0.3); border-radius: 999px; padding: 5px 10px; line-height: 1; }
+.intro .title { margin-top: auto; }
+.intro h1 { font-weight: 400; font-size: clamp(36px, 9.6vw, 54px); line-height: 1.04; margin: 0 0 12px; text-wrap: balance; text-shadow: 0 2px 14px rgb(0 0 0 / 0.6); }
+.intro .sub { font-style: italic; color: var(--gold); margin: 0 0 26px; }
+.intro .prev { border-left: 2px solid var(--gold); padding: 2px 0 2px 14px; margin: 0; color: #d5dde7; }
+
+/* ---------- one part of the story ---------- */
+.part { padding-bottom: var(--part-gap); }
+.slate { min-height: var(--slate-quiet); display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 30px; }
+.has-scene .slate { min-height: var(--slate); }
+.where { font-weight: 400; margin: 0; text-shadow: 0 2px 12px rgb(0 0 0 / 0.85), 0 0 2px rgb(0 0 0 / 0.6); }
+/* One thread runs down the side of the whole story, with a bead at every part,
+   so the parts read as one connected line of events. */
+.part, .gate { position: relative; }
+.part::before, .gate::before { content: ""; position: absolute; z-index: 1; left: -11px; top: 0; bottom: 0; width: 1px; background: var(--thread); pointer-events: none; }
+.gate::before { left: -12px; bottom: calc(var(--part-gap) * -1); }
+.where { position: relative; }
+.where::before { content: ""; position: absolute; left: -15.5px; top: 0.4em; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgb(224 176 74 / 0.22); }
+.link { font-style: italic; font-size: 18px; line-height: 1.5; color: #e3e9f0; margin: 0 0 16px; max-width: 24em; text-wrap: pretty; text-shadow: 0 1px 10px rgb(0 0 0 / 0.9), 0 0 2px rgb(0 0 0 / 0.7); }
+.where .place { display: block; font-size: clamp(28px, 7.4vw, 40px); line-height: 1.08; text-wrap: balance; }
+.where .when { text-shadow: 0 1px 6px rgb(0 0 0 / 0.95), 0 0 2px rgb(0 0 0 / 0.8); display: block; font-size: 14px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-top: 12px; line-height: 1.4; }
+.tag { align-self: flex-start; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1; color: var(--mute); border: 1px dashed rgb(255 255 255 / 0.3); border-radius: 999px; padding: 6px 10px; margin: 0 0 14px; }
+
+/* ---------- controls and widgets ---------- */
+button {
+  font: inherit; font-size: 16px; color: var(--ink); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; min-height: 44px; cursor: pointer;
+  transition: transform var(--quick) var(--ease), background-color var(--quick) ease, border-color var(--quick) ease;
+}
+button:active { transform: translateY(1px) scale(0.98); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.vw { display: inline; font-size: inherit; font-weight: 700; border: 0; border-bottom: 2px dotted var(--gold); border-radius: 0; padding: 0; min-height: 0; line-height: inherit; text-shadow: inherit; }
+
+.gate { background: rgb(14 22 34 / 0.95); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin: 0 0 var(--part-gap); box-shadow: 0 18px 50px rgb(0 0 0 / 0.5); }
+.gate p { margin: 0 0 14px; }
+.gate b { font-weight: 700; color: var(--gold); }
+
+#ctl { position: fixed; z-index: 5; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 8px; transition: transform var(--quick) var(--ease); }
+#ctl button { font-size: var(--text-small); padding: 8px 16px; background: rgb(7 12 20 / 0.8); border-color: rgb(255 255 255 / 0.24); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+#ctl button:hover { border-color: var(--gold); }
+#ctl button[hidden] { display: none; }
+#ctl .icon { width: 44px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+#ctl .icon[data-state="playing"] .i-play, #ctl .icon[data-state="paused"] .i-pause { display: none; }
+#def:not([hidden]) ~ #ctl { transform: translateY(-92px); }
+body.watching #ctl { right: 50%; transform: translateX(50%); }
+
+#def { position: fixed; z-index: 6; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line); padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 12px; align-items: center; justify-content: space-between; font-size: 17px; line-height: 1.45; }
+#def[hidden] { display: none; }
+
+/* ---------- after the story: solid page again ---------- */
+.afterword { position: relative; isolation: isolate; padding: 150px 0 120px; }
+.afterword::before {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%);
+  background: linear-gradient(to bottom, rgb(7 12 20 / 0), var(--bg) 150px);
+}
+.missing { max-width: 34em; margin: 20svh auto; padding: 0 var(--gutter); }
+
+@media (prefers-reduced-motion: reduce) {
+  #stage canvas, main, #ctl, button { transition: none; }
+}
+
+/* ---------- the activities zone ---------- */
+body[data-zone="after"] #watch { display: none; }
+body[data-zone="after"] #ctl { display: none; }
+
+/* ============ SCREEN SIZES ============
+   Phone (default, above): the scene fills the screen behind the text.
+   Tablet upright: the same, with larger type and a wider column.
+   Tablet on its side and computers: the scene stands beside the text. */
+
+@media (min-width: 600px) {
+  :root { --text: 20px; --text-small: 16px; --measure: 640px; --gutter: 36px; --veil-feather: 150px; }
+  .intro h1 { font-size: clamp(46px, 7vw, 66px); }
+  .where .place { font-size: clamp(34px, 5vw, 46px); }
+}
+
+/* Keep this query the same as BESIDE in immersive.js. */
+@media (min-width: 880px) and (min-aspect-ratio: 5/4) {
+  :root { --stage-w: min(80vh, 46vw); --part-gap: 24vh; }
+  html, body { background: var(--bg); }
+
+  #stage { right: auto; width: var(--stage-w); box-shadow: 1px 0 0 rgb(255 255 255 / 0.07); }
+  #stage #fill { opacity: 1; }
+  /* the scene keeps its own shape and is centred in the column; the blur fills any gap */
+  #stage canvas.scene, #stage #amb {
+    top: 50%; bottom: auto; height: auto; aspect-ratio: 4 / 5; transform: translateY(-50%); object-fit: cover;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 34px, #000 calc(100% - 34px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 34px, #000 calc(100% - 34px), transparent);
+  }
+
+  main { margin: 0 0 0 var(--stage-w); max-width: none; min-height: 100vh; padding: 0 clamp(36px, 5vw, 96px); background: var(--bg); }
+  main > *, main > .after > * { max-width: 660px; margin-left: auto; margin-right: auto; }
+  body.watching main { opacity: 0.12; visibility: visible; }
+  main > .gate { margin-left: auto; margin-right: auto; }
+
+  /* the text sits on a plain page here, so it needs no veil */
+  .veil::before { display: none; }
+  .veil p, .veil li, .where, .link, .intro h1 { text-shadow: none; }
+  .slate, .has-scene .slate { min-height: 0; padding-top: 4vh; }
+  .intro { min-height: 100vh; }
+  .gate { box-shadow: none; }
+  .afterword { padding-top: 6vh; }
+  .afterword::before { display: none; }
+
+  #ctl { right: auto; left: 18px; }
+  body.watching #ctl { right: auto; left: 18px; transform: none; }
+  #def { left: var(--stage-w); }
+  #def:not([hidden]) ~ #ctl { transform: none; }
+  body[data-zone="after"] #ctl { display: flex; }
+}
+
+/* ---------- the way on, at the end of an episode ---------- */
+.onward { position: relative; max-width: var(--measure); margin: 56px auto 0; padding: 26px 24px 24px; border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 4px 4px 14px 14px; background: linear-gradient(180deg, rgb(224 176 74 / 0.09), rgb(14 22 34 / 0.92) 46%); }
+.onward-eyebrow { margin: 0 0 8px; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+.onward-title { margin: 0 0 8px; font-weight: 400; font-size: clamp(24px, 6vw, 32px); line-height: 1.14; text-wrap: balance; }
+.onward-about { margin: 0 0 20px; color: #d5dde7; font-style: italic; }
+.onward-go { display: inline-block; margin: 0 16px 6px 0; padding: 12px 20px; border-radius: 999px; background: var(--gold); color: #1a1408; font-weight: 600; text-decoration: none; transition: transform var(--quick) var(--ease), background var(--quick); }
+.onward-go:hover { background: #f0c868; transform: translateY(-1px); }
+.onward-go:active { transform: translateY(0); }
+.onward-all { color: var(--mute); text-underline-offset: 4px; white-space: nowrap; }
+.onward-all:hover { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .onward-go { transition: none; }
+  .onward-go:hover { transform: none; }
+}
