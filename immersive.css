@@ -17,9 +17,8 @@
 
   --measure: 600px;
   --gutter: 20px;
-  --slate: 46svh;        /* open space before a part, where the scene shows clearly */
-  --slate-quiet: 30svh;  /* the same, for parts with no scene yet */
-  --part-gap: 11svh;
+  --scene-break: 30svh;  /* open space where the scene behind the text changes; the text itself runs on */
+  --part-gap: 11svh;     /* the space around the "Stop and decide" box */
   --thread: rgb(224 176 74 / 0.42);   /* the line that joins the parts */
 
   --font: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
@@ -116,22 +115,14 @@ body.watching main, body.watching #def { opacity: 0; visibility: hidden; transit
 .intro .sub { font-style: italic; color: var(--gold); margin: 0 0 26px; }
 .intro .prev { border-left: 2px solid var(--gold); padding: 2px 0 2px 14px; margin: 0; color: #d5dde7; }
 
-/* ---------- one part of the story ---------- */
-.part { padding-bottom: var(--part-gap); }
-.slate { min-height: var(--slate-quiet); display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 30px; }
-.has-scene .slate { min-height: var(--slate); }
-.where { font-weight: 400; margin: 0; text-shadow: 0 2px 12px rgb(0 0 0 / 0.85), 0 0 2px rgb(0 0 0 / 0.6); }
-/* One thread runs down the side of the whole story, with a bead at every part,
-   so the parts read as one connected line of events. */
+/* ---------- the story: one text from beginning to end ----------
+   It has no titles inside it. Where the scene behind the text changes there is a little open
+   space, so that the new picture can be seen; the words run straight on after it.
+   A thin thread runs down the side of the whole story. */
 .part, .gate { position: relative; }
+.scene-break { height: var(--scene-break); }
 .part::before, .gate::before { content: ""; position: absolute; z-index: 1; left: -11px; top: 0; bottom: 0; width: 1px; background: var(--thread); pointer-events: none; }
 .gate::before { left: -12px; bottom: calc(var(--part-gap) * -1); }
-.where { position: relative; }
-.where::before { content: ""; position: absolute; left: -15.5px; top: 0.4em; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgb(224 176 74 / 0.22); }
-.link { font-style: italic; font-size: 18px; line-height: 1.5; color: #e3e9f0; margin: 0 0 16px; max-width: 24em; text-wrap: pretty; text-shadow: 0 1px 10px rgb(0 0 0 / 0.9), 0 0 2px rgb(0 0 0 / 0.7); }
-.where .place { display: block; font-size: clamp(28px, 7.4vw, 40px); line-height: 1.08; text-wrap: balance; }
-.where .when { text-shadow: 0 1px 6px rgb(0 0 0 / 0.95), 0 0 2px rgb(0 0 0 / 0.8); display: block; font-size: 14px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-top: 12px; line-height: 1.4; }
-.tag { align-self: flex-start; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1; color: var(--mute); border: 1px dashed rgb(255 255 255 / 0.3); border-radius: 999px; padding: 6px 10px; margin: 0 0 14px; }
 
 /* ---------- controls and widgets ---------- */
 button {
@@ -144,7 +135,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-
 .primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .vw { display: inline; font-size: inherit; font-weight: 700; border: 0; border-bottom: 2px dotted var(--gold); border-radius: 0; padding: 0; min-height: 0; line-height: inherit; text-shadow: inherit; }
 
-.gate { background: rgb(14 22 34 / 0.95); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin: 0 0 var(--part-gap); box-shadow: 0 18px 50px rgb(0 0 0 / 0.5); }
+.gate { background: rgb(14 22 34 / 0.95); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin: var(--part-gap) 0; box-shadow: 0 18px 50px rgb(0 0 0 / 0.5); }
 .gate p { margin: 0 0 14px; }
 .gate b { font-weight: 700; color: var(--gold); }
 
@@ -184,12 +175,11 @@ body[data-zone="after"] #ctl { display: none; }
 @media (min-width: 600px) {
   :root { --text: 20px; --text-small: 16px; --measure: 640px; --gutter: 36px; --veil-feather: 150px; }
   .intro h1 { font-size: clamp(46px, 7vw, 66px); }
-  .where .place { font-size: clamp(34px, 5vw, 46px); }
 }
 
 /* Keep this query the same as BESIDE in immersive.js. */
 @media (min-width: 880px) and (min-aspect-ratio: 5/4) {
-  :root { --stage-w: min(80vh, 46vw); --part-gap: 24vh; }
+  :root { --stage-w: min(80vh, 46vw); --part-gap: 8vh; --scene-break: 6vh; }
   html, body { background: var(--bg); }
 
   #stage { right: auto; width: var(--stage-w); box-shadow: 1px 0 0 rgb(255 255 255 / 0.07); }
@@ -208,8 +198,7 @@ body[data-zone="after"] #ctl { display: none; }
 
   /* the text sits on a plain page here, so it needs no veil */
   .veil::before { display: none; }
-  .veil p, .veil li, .where, .link, .intro h1 { text-shadow: none; }
-  .slate, .has-scene .slate { min-height: 0; padding-top: 4vh; }
+  .veil p, .veil li, .intro h1 { text-shadow: none; }
   .intro { min-height: 100vh; }
   .gate { box-shadow: none; }
   .afterword { padding-top: 6vh; }

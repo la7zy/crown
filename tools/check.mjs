@@ -11,8 +11,10 @@ const HEADER = 28; // 16-byte salt + 12-byte IV
 const FORBIDDEN = /\.(pdf|zip)$/i;
 // The reader: the episode page and what it loads once an episode is open.
 const READER = ['ep.html', 'reader.js', 'reader.css', 'immersive.js', 'immersive.css', 'ambient.js', 'after.js', 'after.css'];
+// The teacher page: the table of every episode's code, after the teacher password.
+const TEACHER_PAGE = ['teacher.html', 'teacher.js', 'teacher.css', 'qr.js'];
 // Working files that hold episodes unlocked, or belong to the build. They must never reach the site.
-const TEXT = /\.(html|js|mjs|css|json|webmanifest|md|txt|svg)$/i;   // the files that are searched for codes
+const BINARY = /\.(bin|png|jpe?g|gif|ico|webp)$/i;   // locked files and pictures; every other file is searched for codes
 const UNLOCKED = /(^|\/)(episode-\d\d\.js|series(-map)?\.js|story\.json|scenes\.json|extra\.json|source\.bin|test-codes\.json)$/i;
 const fails = [];
 const check = (ok, msg) => { console.log((ok ? 'PASS  ' : 'FAIL  ') + msg); if (!ok) fails.push(msg); };
@@ -33,14 +35,19 @@ try { eps = JSON.parse(fs.readFileSync('episodes.json', 'utf8')).eps || []; chec
 catch (e) { check(false, 'episodes.json is valid JSON (' + e.message + ')'); }
 
 check(fs.existsSync('.nojekyll'), '.nojekyll is present');
-for (const f of ['index.html', 'teacher.html', 'teacher.bin', 'sw.js', 'manifest.webmanifest', ...READER]) check(exists(f), f + ' is present');
+for (const f of ['index.html', 'teacher.bin', 'sw.js', 'manifest.webmanifest', ...READER, ...TEACHER_PAGE]) check(exists(f), f + ' is present');
 
-// The episode page allows scripts from this site only, so it must not carry one of its own.
-const page = (fs.existsSync('ep.html') ? fs.readFileSync('ep.html', 'utf8') : '').replace(/<!--[\s\S]*?-->/g, '');
-const policy = (page.match(/http-equiv="Content-Security-Policy"\s+content="([^"]*)"/) || [, ''])[1];
-const scriptsFrom = (policy.match(/script-src([^;]*)/) || [, ''])[1].trim();
-check(/default-src 'self'/.test(policy) && scriptsFrom === "'self' 'unsafe-eval'", 'ep.html allows scripts from this site only');
-check(!/<script(?![^>]*\bsrc=)/i.test(page) && !/\son[a-z]+\s*=/i.test(page), 'ep.html has no script written into the page');
+// The episode page and the teacher page allow scripts from this site only, so neither may carry one of its own.
+// The episode page also allows the scenes, which travel inside the locked episode, to be started ('unsafe-eval').
+function pagePolicy(file, scriptsAllowed) {
+  const page = (fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '').replace(/<!--[\s\S]*?-->/g, '');
+  const policy = (page.match(/http-equiv="Content-Security-Policy"\s+content="([^"]*)"/) || [, ''])[1];
+  const scriptsFrom = (policy.match(/script-src([^;]*)/) || [, ''])[1].trim();
+  check(/default-src 'self'/.test(policy) && scriptsFrom === scriptsAllowed, file + ' allows scripts from this site only');
+  check(!/<script(?![^>]*\bsrc=)/i.test(page) && !/\son[a-z]+\s*=/i.test(page), file + ' has no script written into the page');
+}
+pagePolicy('ep.html', "'self' 'unsafe-eval'");
+pagePolicy('teacher.html', "'self'");
 
 const sw = fs.existsSync('sw.js') ? fs.readFileSync('sw.js', 'utf8') : '';
 const shell = (sw.match(/SHELL=\[([^\]]*)\]/) || [, ''])[1].split(',').map((s) => s.trim().replace(/^'|'$/g, '')).filter((s) => s && s !== './');
@@ -73,7 +80,7 @@ if (process.env.CROWN_PASSWORD) {
     check(t.eps.map((e) => e.n).sort().join() === ready.map((e) => e.n).sort().join(), 'teacher page lists the same ' + ready.length + ' released episodes');
     // No code and no password may be written in a file anyone can read, however it is spelt.
     const secrets = [process.env.CROWN_PASSWORD, ...t.eps.map((e) => e.code)].map(norm).filter(Boolean);
-    const carrying = walk('.').filter((f) => TEXT.test(f) && secrets.some((s) => norm(fs.readFileSync(f, 'utf8')).includes(s)));
+    const carrying = walk('.').filter((f) => !BINARY.test(f) && secrets.some((s) => norm(fs.readFileSync(f, 'utf8')).includes(s)));
     check(carrying.length === 0, 'no code and no password is written in a public file' + (carrying.length ? ' (look at ' + carrying.join(', ') + ')' : ''));
     for (const e of t.eps) {
       try {

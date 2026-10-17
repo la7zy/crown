@@ -1,7 +1,7 @@
 // Keeps the site's pages for reading without internet. Written by prototype/publish.mjs from
 // this template: the version changes whenever a page changes.
-const V='crown-bc9137ffa426';
-const SHELL=['./','index.html','episodes.json','manifest.webmanifest','icon-192.png','icon-512.png','hero.jpg','ep.html','reader.js','reader.css','immersive.js','immersive.css','ambient.js','after.js','after.css','thumb01.jpg','thumb02.jpg'];
+const V='crown-8240780dfcd4';
+const SHELL=['./','index.html','episodes.json','manifest.webmanifest','icon-192.png','icon-512.png','hero.jpg','ep.html','reader.js','reader.css','immersive.js','immersive.css','ambient.js','after.js','after.css','thumb01.jpg','thumb02.jpg','thumb03.jpg','thumb04.jpg','thumb05.jpg','thumb06.jpg','thumb07.jpg','thumb08.jpg','thumb09.jpg','thumb10.jpg','thumb11.jpg','thumb12.jpg','thumb13.jpg','thumb14.jpg','thumb15.jpg'];
 const EPISODES = 'crown-episodes';   // the locked episodes a phone has opened: kept from one version to the next
 
 const isEpisode = (url) => /\/ep\d\d\.bin$/.test(new URL(url).pathname);

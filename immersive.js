@@ -48,13 +48,6 @@
 
   // ---------- 1. cut the episode into blocks ----------
 
-  // "Whitehall Palace. February 1689." -> place and time
-  function splitWhere(text) {
-    var s = text.trim().replace(/\.$/, '');
-    var i = s.indexOf('. ');
-    return i < 0 ? { place: s, when: '' } : { place: s.slice(0, i), when: s.slice(i + 2) };
-  }
-
   function flatten(parent, gated, out) {
     Array.prototype.forEach.call(parent.children, function (node) {
       if (node.classList.contains('after')) flatten(node, true, out);
@@ -70,7 +63,7 @@
     var byParagraph = EXTRA.split === 'paragraph', waiting = null;   // waiting: a scene placed just before its paragraph
 
     function start(type, gated, where) {
-      cur = { type: type, gated: gated, where: where || null, scene: null, label: '', body: el('div'), nodes: [] };
+      cur = { type: type, gated: gated, scene: null, label: '', body: el('div'), nodes: [] };
       blocks.push(cur);
       return cur;
     }
@@ -80,7 +73,7 @@
       var node = item.node;
       var isHeading = node.tagName === 'H2';
       if (cur.type === 'afterword') { cur.nodes.push(node); return; }
-      if (isHeading && node.classList.contains('where')) { start('part', item.gated, splitWhere(node.textContent)); return; }
+      if (isHeading && node.classList.contains('where')) { start('part', item.gated); return; }   // a heading inside the story only marks where a part begins
       if (isHeading) { start('afterword', item.gated).nodes.push(node); return; }
       if (node.classList.contains('gate')) { start('gate', item.gated).body = node; return; }
       if (node.classList.contains('film')) {
@@ -161,28 +154,38 @@
     return head;
   }
 
+  // The sentence that joins a part to the one before is the start of its first paragraph: the story
+  // reads on without a break.
+  function leadInto(body, sentence) {
+    var first = body.firstElementChild;
+    if (!first || first.tagName !== 'P') { first = el('p'); body.insertBefore(first, body.firstChild); }
+    first.insertBefore(document.createTextNode(sentence + ' '), first.firstChild);
+  }
+
+  // How a part is named when the activities send the reader back to it: its first words.
+  function openingWords(body) {
+    var words = ((body.querySelector('p') || body).textContent || '').trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return 'the story';
+    return '\u201C' + words.slice(0, 7).join(' ') + (words.length > 7 ? '\u2026' : '') + '\u201D';
+  }
+
+  // One stretch of the story. There is no title over it: the text runs on from the part before, as the
+  // author wrote it. Only the scene behind the text changes, with a little open space where it does,
+  // so that the new picture can be seen.
   function partEl(b) {
     // The episode's own scene if it has one, otherwise the scene added for this part.
     var info = (EXTRA.parts || [])[parts.length] || {};
-    var where = b.where || (info.place ? { place: info.place, when: info.when || '' } : null);
     var name = b.scene || info.scene || (EXTRA.scenes || [])[parts.length] || null;
     var drawn = name && typeof SCN[name] === 'function';
     var sec = el('section', 'part' + (drawn ? ' has-scene' : ''));
     sec.dataset.backdrop = drawn ? 'scene:' + name : info.mood ? 'amb:' + info.mood : quietBackdrop();
-    if (where) {
-      var slate = el('div', 'slate');
-      if (!drawn && TAG) slate.appendChild(el('p', 'tag', 'Scene not drawn yet'));   // a note for the prototype only
-      if (info.link) slate.appendChild(el('p', 'link', info.link));   // the sentence that joins this part to the one before
-      var h = el('h2', 'where');
-      h.appendChild(el('span', 'place', where.place));
-      if (where.when) h.appendChild(el('span', 'when', where.when));
-      slate.appendChild(h);
-      if (drawn && b.label) slate.appendChild(el('p', 'sr', 'With the text: ' + b.label));
-      sec.appendChild(slate);
-    }
+    var before = parts.length ? parts[parts.length - 1].el.dataset.backdrop : null;
+    if (before && before !== sec.dataset.backdrop) sec.appendChild(el('div', 'scene-break'));
+    if (drawn && b.label) sec.appendChild(el('p', 'sr', 'The picture changes. ' + b.label));
+    if (info.link) leadInto(b.body, info.link);
     b.body.className = 'body veil';
     sec.appendChild(b.body);
-    parts.push({ el: sec, name: where ? where.place + (where.when ? ', ' + where.when : '') : 'Part ' + (parts.length + 1) });
+    parts.push({ el: sec, name: openingWords(b.body) });
     return sec;
   }
 

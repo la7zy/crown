@@ -1,7 +1,7 @@
 # The Price of a Crown
 
 A fifteen-episode reading series for English learners, published with GitHub Pages.
-The teacher releases one episode per reading day by showing a QR code; the episode then stays open on the student's phone and works offline.
+All fifteen episodes are on the site, each locked with its own code. The teacher gives the class an episode's code (or its QR code) on the reading day; the episode then stays open on the student's phone and works offline. The story reads as one continuous text, and the animated scene behind it changes as the student reads.
 
 ## What is in this repository
 
@@ -9,9 +9,9 @@ The teacher releases one episode per reading day by showing a QR code; the episo
 |------|---------|
 | `index.html` | Home page: the episode list |
 | `ep.html`, `reader.js`, `reader.css` | Episode page: asks for the day's code, unlocks the episode, then starts the reader |
-| `immersive.js`, `immersive.css`, `ambient.js` | The reader: the story in parts, each with its animated scene behind (or beside) the text |
+| `immersive.js`, `immersive.css`, `ambient.js` | The reader: the story as one text, with the scene of each part behind (or beside) it |
 | `after.js`, `after.css` | The activities after the story: the crown quiz, scenes in order, rumour or record, word cards |
-| `teacher.html` | Teacher page: shows the QR code and typed code for each released episode |
+| `teacher.html`, `teacher.js`, `teacher.css`, `qr.js` | Teacher page: after the teacher password, one table with every episode's code, a copy button, a link and a QR code for the classroom screen |
 | `epNN.bin` | One locked episode each (AES-GCM, key derived from the episode code): text, scenes, activities and the printable PDF |
 | `teacher.bin` | The episode codes, encrypted with the teacher password |
 | `episodes.json` | Titles, blurbs and which episodes are released |
@@ -19,6 +19,16 @@ The teacher releases one episode per reading day by showing a QR code; the episo
 | `tools/check.mjs` | Pre-publish check (see below) |
 
 **Never commit** `teacher-sheet.pdf`, the printable PDFs, the build zip, or any working file that holds an episode unlocked (`episode-NN.js`, `story.json`, `series-map.js`, `source.bin`). `.gitignore` blocks `*.pdf` and `*.zip`, and the check fails if one of these is in the folder.
+
+## Releasing more episodes
+
+Episodes get their codes from a script kept beside this folder:
+
+```bash
+node prototype/release.mjs 03 04
+```
+
+It gives each episode named a new code (an episode that already has one keeps it), stores the codes only inside `teacher.bin`, locked with the teacher password, and marks the episodes as released in `episodes.json`. It never prints a code: the teacher page shows them. Then publish as below. Each released episode needs a `thumbNN.jpg`; `node prototype/dev/thumbs.mjs NN` makes one from the episode's scenes.
 
 ## Publishing an update
 
@@ -40,7 +50,7 @@ node tools/check.mjs
 git add -A && git commit -m "feat: release episode NN" && git push
 ```
 
-To also prove that every released episode opens with its code, give the check the teacher password in the environment (it is never written anywhere): `CROWN_PASSWORD=... node tools/check.mjs`.
+To also prove that every released episode opens with its code, and that no code or password is written in a public file, run `node prototype/check-site.mjs` from the folder above. It reads the teacher password from the private teacher sheet, so the password is never typed on a command line.
 
 `node prototype/publish.mjs test` makes a whole copy of the site locked with made-up codes, for trying the unlock on this computer without a real code.
 

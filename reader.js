@@ -285,7 +285,7 @@
   // Hands the episode to the reader. Whatever goes wrong here ends on a screen that says so.
   function show(episode) {
     return episodes().then(function (eps) {
-      window.EP = { n: E, title: episode.title, html: episode.html, vocab: episode.vocab || {}, quiz: episode.quiz || [], extra: episode.extra || {} };
+      window.EP = { n: E, title: episode.title, html: episode.html, vocab: episode.vocab || {}, quiz: episode.quiz || [], extra: episode.extra || {}, hasPdf: Boolean(episode.pdf) };
       window.SERIES = { eps: eps.map(function (e) { return { n: e.n, title: e.t, about: e.d, part: e.p, built: Boolean(e.ready) }; }) };
       window.READER = { episodeUrl: 'ep.html?e=', homeUrl: HOME, tag: '', siteName: SITE_NAME, scoreKey: 'crown.s.' };
       startScenes(episode.code);
