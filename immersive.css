@@ -17,7 +17,6 @@
 
   --measure: 600px;
   --gutter: 20px;
-  --scene-break: 30svh;  /* open space where the scene behind the text changes; the text itself runs on */
   --part-gap: 11svh;     /* the space around the "Stop and decide" box */
   --thread: rgb(224 176 74 / 0.42);   /* the line that joins the parts */
 
@@ -116,11 +115,10 @@ body.watching main, body.watching #def { opacity: 0; visibility: hidden; transit
 .intro .prev { border-left: 2px solid var(--gold); padding: 2px 0 2px 14px; margin: 0; color: #d5dde7; }
 
 /* ---------- the story: one text from beginning to end ----------
-   It has no titles inside it. Where the scene behind the text changes there is a little open
-   space, so that the new picture can be seen; the words run straight on after it.
+   It has no titles and no gaps inside it: where the scene behind the text changes, the words
+   run straight on and the new picture comes in behind them as the reader scrolls.
    A thin thread runs down the side of the whole story. */
 .part, .gate { position: relative; }
-.scene-break { height: var(--scene-break); }
 .part::before, .gate::before { content: ""; position: absolute; z-index: 1; left: -11px; top: 0; bottom: 0; width: 1px; background: var(--thread); pointer-events: none; }
 .gate::before { left: -12px; bottom: calc(var(--part-gap) * -1); }
 
@@ -152,7 +150,7 @@ body.watching #ctl { right: 50%; transform: translateX(50%); }
 #def[hidden] { display: none; }
 
 /* ---------- after the story: solid page again ---------- */
-.afterword { position: relative; isolation: isolate; padding: 150px 0 120px; }
+.afterword { position: relative; isolation: isolate; padding: 150px 0 120px; margin-top: 30svh; }   /* room after the last paragraph, so the last scene is seen before the activities */
 .afterword::before {
   content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%);
   background: linear-gradient(to bottom, rgb(7 12 20 / 0), var(--bg) 150px);
@@ -179,7 +177,7 @@ body[data-zone="after"] #ctl { display: none; }
 
 /* Keep this query the same as BESIDE in immersive.js. */
 @media (min-width: 880px) and (min-aspect-ratio: 5/4) {
-  :root { --stage-w: min(80vh, 46vw); --part-gap: 8vh; --scene-break: 6vh; }
+  :root { --stage-w: min(80vh, 46vw); --part-gap: 8vh; }
   html, body { background: var(--bg); }
 
   #stage { right: auto; width: var(--stage-w); box-shadow: 1px 0 0 rgb(255 255 255 / 0.07); }
@@ -201,7 +199,7 @@ body[data-zone="after"] #ctl { display: none; }
   .veil p, .veil li, .intro h1 { text-shadow: none; }
   .intro { min-height: 100vh; }
   .gate { box-shadow: none; }
-  .afterword { padding-top: 6vh; }
+  .afterword { padding-top: 6vh; margin-top: 8vh; }
   .afterword::before { display: none; }
 
   #ctl { right: auto; left: 18px; }

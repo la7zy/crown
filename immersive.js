@@ -179,8 +179,6 @@
     var drawn = name && typeof SCN[name] === 'function';
     var sec = el('section', 'part' + (drawn ? ' has-scene' : ''));
     sec.dataset.backdrop = drawn ? 'scene:' + name : info.mood ? 'amb:' + info.mood : quietBackdrop();
-    var before = parts.length ? parts[parts.length - 1].el.dataset.backdrop : null;
-    if (before && before !== sec.dataset.backdrop) sec.appendChild(el('div', 'scene-break'));
     if (drawn && b.label) sec.appendChild(el('p', 'sr', 'The picture changes. ' + b.label));
     if (info.link) leadInto(b.body, info.link);
     b.body.className = 'body veil';
