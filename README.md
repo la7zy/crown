@@ -50,7 +50,7 @@ node tools/check.mjs
 git add -A && git commit -m "feat: release episode NN" && git push
 ```
 
-To also prove that every released episode opens with its code, and that no code or password is written in a public file, run `node prototype/check-site.mjs` from the folder above. It reads the teacher password from the private teacher sheet, so the password is never typed on a command line.
+To also prove that every released episode opens with its code, and that no code or password is written in a public file, run `node prototype/check-site.mjs` from the folder above. It reads the teacher password from the private folder (`teacher-password.txt`, or the teacher sheet), so the password is never typed on a command line. To change the teacher password, run `node prototype/change-password.mjs` with the new one in `NEW_TEACHER_PASSWORD`, then publish and push.
 
 `node prototype/publish.mjs test` makes a whole copy of the site locked with made-up codes, for trying the unlock on this computer without a real code.
 
